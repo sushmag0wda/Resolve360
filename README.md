@@ -24,36 +24,37 @@ Built with **simplicity, security, and speed** in mind.
 ## 📸 Screenshots
 
 ### 🏠 Landing Page
-![Landing Page](landing-page.png)
+![Landing Page](screenshots/landing-page.png)
 
 ### 👩‍🎓 User Side
 - **User Login**  
-  ![User Login](user-login.png)
+  ![User Login](screenshots/user-login.png)
 
 - **User Register**  
-  ![User Register](user-register.png)
+  ![User Register](screenshots/user-register.png)
   
   - **Waitlist**  
-  ![User Waitlist](user-waitlist.png)
+  ![User Waitlist](screenshots/user-waitlist.png)
 
 - **Submit Complaint**  
-  ![Submit Complaint](user-submit-complaint.png)
+  ![Submit Complaint](screenshots/user-submit-complaint.png)
 
 - **Complaints List**  
-  ![User Complaints](user-complaints.png)
+  ![User Complaints](screenshots/user-complaints.png)
 
 
 
 ### 👨‍💼 Admin Side
 - **Admin Login**  
-  ![Admin Login](admin-login.png)
+  ![Admin Login](screenshots/admin-login.png)
 
 - **Admin Dashboard**  
-  ![Admin Dashboard](admin-dashboard.png)
+  ![Admin Dashboard](screenshots/admin-dashboard.png)
 
 - **Manage Users**  
-  ![Manage Users](admin-manage-users.png)
+  ![Manage Users](screenshots/admin-manage-users.png)
 
 ---
+
 
 
