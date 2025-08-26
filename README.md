@@ -33,7 +33,7 @@ Built with **simplicity, security, and speed** in mind.
 - **User Register**  
   ![User Register](screenshots/user-register.png)
   
-  - **Waitlist**  
+- **Waitlist**  
   ![User Waitlist](screenshots/user-waitlist.png)
 
 - **Submit Complaint**  
@@ -55,6 +55,7 @@ Built with **simplicity, security, and speed** in mind.
   ![Manage Users](screenshots/admin-manage-users.png)
 
 ---
+
 
 
 
