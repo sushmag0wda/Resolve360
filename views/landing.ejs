@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Resolve360</title>
+  <link rel="stylesheet" href="/style.css" />
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    html, body {
+      height: 100%;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: url("/landing-image.png") no-repeat center center fixed;
+      background-size: cover;
+      color: #fff;
+    }
+
+    body {
+      display: flex;
+      flex-direction: column;
+    }
+
+    header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 20px 40px;
+    }
+
+    .logo-container {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .logo-container img {
+      width: 40px;
+      height: 40px;
+    }
+
+    .logo-container span {
+      font-size: 1.6rem;
+      font-weight: bold;
+      text-shadow: 1px 1px 4px #000;
+      color: #ffd700; /* golden yellow for high visibility */
+    }
+
+    .landing-buttons {
+      position: absolute;
+      top: 20px;
+      right: 40px;
+      display: flex;
+      gap: 15px;
+    }
+
+    .landing-buttons a button {
+      padding: 10px 20px;
+      font-size: 1rem;
+      font-weight: 500;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      transition: background 0.3s ease;
+    }
+
+    .btn-login {
+      background-color: #3498db;
+      color: white;
+    }
+
+    .btn-login:hover {
+      background-color: #2980b9;
+    }
+
+    .btn-admin {
+      background-color: #2ecc71;
+      color: white;
+    }
+
+    .btn-admin:hover {
+      background-color: #27ae60;
+    }
+
+    main {
+      flex: 1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+      animation: fadeIn 1.5s ease;
+    }
+
+    .glass-box {
+      background: rgba(0, 0, 0, 0.4);
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+      border-radius: 15px;
+      padding: 40px;
+      max-width: 700px;
+      text-align: center;
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.5);
+    }
+
+    .glass-box h1 {
+      font-size: 2.8rem;
+      margin-bottom: 20px;
+      color: #ffcc00; /* bright gold */
+      text-shadow: 2px 2px 6px #000;
+    }
+
+    .glass-box p {
+      font-size: 1.3rem;
+      color: #e0e0e0; /* soft gray-white */
+      text-shadow: 1px 1px 2px #000;
+    }
+
+    footer {
+      text-align: center;
+      padding: 15px;
+      font-size: 0.9rem;
+      color: #ccc; /* footer color changed to light gray */
+      text-shadow: 1px 1px 3px #000;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(30px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    @media (max-width: 600px) {
+      .glass-box h1 {
+        font-size: 1.8rem;
+      }
+
+      .glass-box p {
+        font-size: 1rem;
+      }
+
+      .landing-buttons {
+        flex-direction: column;
+        top: 10px;
+        right: 10px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="logo-container">
+      <!-- Optional: <img src="/logo.png" alt="Logo" /> -->
+      <span>Resolve360</span>
+    </div>
+  </header>
+
+  <div class="landing-buttons">
+    <a href="/login"><button class="btn-login">User Login</button></a>
+    <a href="/admin"><button class="btn-admin">Admin Login</button></a>
+  </div>
+
+  <main>
+    <div class="glass-box">
+      <h1>Welcome to Resolve360</h1>
+      <p>Submit, track, and resolve complaints with ease. Secure, simple, and fast for everyone.</p>
+    </div>
+  </main>
+
+  <footer>
+    &copy; <%= new Date().getFullYear() %> Complaint Portal. All rights reserved.
+  </footer>
+</body>
+</html>

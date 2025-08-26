@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>User Dashboard</title>
+  <link rel="stylesheet" href="/style.css" />
+  <style>
+    .top-bar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 20px;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+    .button-group {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+    .filter-section {
+      margin: 10px 0 20px;
+    }
+    .dropdown-filter {
+      padding: 10px;
+      font-size: 16px;
+      border-radius: 6px;
+      border: 1px solid #aaa;
+    }
+    .complaint-card {
+      border: 1px solid #ddd;
+      border-radius: 10px;
+      padding: 15px;
+      margin-bottom: 20px;
+      background-color: #f9f9f9;
+    }
+    .status {
+      font-weight: bold;
+    }
+    .reply-box {
+      background-color: #eef;
+      padding: 10px;
+      margin: 10px 0;
+      border-left: 4px solid #339;
+    }
+    button[type="submit"] {
+      padding: 8px 14px;
+      margin-top: 10px;
+      background-color: #3a7;
+      color: white;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+    }
+    .alert-overlay {
+      display: none;
+      position: fixed;
+      top: 0; left: 0;
+      width: 100%; height: 100%;
+      background: rgba(0, 0, 0, 0.5);
+      justify-content: center;
+      align-items: center;
+      z-index: 1000;
+    }
+    .alert-box {
+      background: white;
+      padding: 30px;
+      border-radius: 10px;
+      text-align: center;
+    }
+    .alert-button {
+      margin-top: 20px;
+      padding: 8px 16px;
+      background: #007bff;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+  </style>
+</head>
+<body>
+  <div class="dashboard-container">
+    <div class="top-bar">
+      <h1>Welcome, <%= user.name %></h1>
+      <div class="button-group">
+        <a href="/complaint"><button class="btn-secondary">New Complaint</button></a>
+        <a href="/logout"><button class="btn-main">Logout</button></a>
+      </div>
+    </div>
+
+    <!-- Custom Alert -->
+    <div id="message-data" data-message="<%= message ? message.replace(/"/g, '&quot;') : '' %>"></div>
+    <div id="custom-alert" class="alert-overlay">
+      <div class="alert-box">
+        <div id="alert-message" class="alert-text"></div>
+        <button class="alert-button" onclick="closeAlert()">OK</button>
+      </div>
+    </div>
+
+    <script>
+      const msg = document.getElementById("message-data").dataset.message;
+      if (msg.trim()) {
+        document.getElementById("alert-message").innerText = msg;
+        document.getElementById("custom-alert").style.display = "flex";
+      }
+      function closeAlert() {
+        document.getElementById("custom-alert").style.display = "none";
+      }
+
+      function filterDropdown() {
+        const selectedStatus = document.getElementById('statusFilter').value;
+        const cards = document.querySelectorAll('.complaint-card');
+        cards.forEach(card => {
+          const cardStatus = card.getAttribute('data-status');
+          card.style.display = (selectedStatus === 'all' || cardStatus === selectedStatus) ? 'block' : 'none';
+        });
+      }
+    </script>
+
+    <h2>Your Complaints</h2>
+
+    <div class="filter-section">
+      <label for="statusFilter"><strong>Filter by:</strong></label>
+      <select id="statusFilter" class="dropdown-filter" onchange="filterDropdown()">
+        <option value="all">All</option>
+        <option value="pending">Pending</option>
+        <option value="inprogress">In Progress</option>
+        <option value="resolved">Resolved</option>
+        <option value="rejected">Rejected</option>
+      </select>
+    </div>
+
+    <div id="complaints-section">
+      <% if (complaints.length === 0) { %>
+        <p>No complaints submitted yet.</p>
+      <% } else { %>
+        <% complaints.forEach(c => {
+          const statusClass = c.status.replace(/ /g, '').toLowerCase();
+        %>
+          <div class="complaint-card" data-status="<%= statusClass %>">
+            <h3><%= c.subject %></h3>
+            <p><%= c.description %></p>
+            <p class="status <%= statusClass %>">Status: <%= c.status %></p>
+
+            <% if (c.reply) { %>
+              <p class="reply-box"><strong>Admin Reply:</strong> <%= c.reply %></p>
+            <% } %>
+
+            <% if (c.status !== 'Pending' && c.reply && !c.acknowledged) { %>
+              <form method="POST" action="/user/acknowledge-complaint">
+                <input type="hidden" name="complaintId" value="<%= c.id %>" />
+                <button type="submit">Acknowledge & Remove</button>
+              </form>
+            <% } %>
+          </div>
+        <% }) %>
+      <% } %>
+    </div>
+  </div>
+</body>
+</html>
