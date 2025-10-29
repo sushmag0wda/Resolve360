@@ -30,6 +30,21 @@ body.centered {
   animation: fadeIn 0.6s ease;
 }
 
+.login-hint {
+  margin-top: 16px;
+  padding: 12px 14px;
+  border-radius: 10px;
+  border: 1px dashed rgba(255, 255, 255, 0.25);
+  background: rgba(108, 99, 255, 0.1);
+  text-align: center;
+  font-size: 14px;
+  color: #e0e0ff;
+}
+
+.login-hint strong {
+  color: #66d9ef;
+}
+
 h2 {
   text-align: center;
   color: #ffffff;

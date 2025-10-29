@@ -1,49 +1,42 @@
--- Create database
-CREATE DATABASE IF NOT EXISTS complaint_system;
-USE complaint_system;
+-- SQLite schema for the complaint management system
+-- Run with: sqlite3 complaint_system.sqlite < cms.sql
 
--- Drop tables if they exist
+PRAGMA foreign_keys = ON;
+
 DROP TABLE IF EXISTS complaints;
 DROP TABLE IF EXISTS users;
 DROP TABLE IF EXISTS admins;
 
--- Create users table
 CREATE TABLE users (
-    id INT AUTO_INCREMENT PRIMARY KEY,
-    name VARCHAR(100),
-    email VARCHAR(100) UNIQUE,
-    password VARCHAR(255),
-    approved TINYINT(1) DEFAULT 0
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    name TEXT,
+    email TEXT UNIQUE,
+    password TEXT,
+    approved INTEGER DEFAULT 0
 );
 
--- Create complaints table
 CREATE TABLE complaints (
-    id INT AUTO_INCREMENT PRIMARY KEY,
-    user_id INT,
-    subject VARCHAR(255),
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    user_id INTEGER,
+    subject TEXT,
     description TEXT,
-    status ENUM('Pending','In Progress','Resolved','Rejected') DEFAULT 'Pending',
+    status TEXT CHECK(status IN ('Pending','In Progress','Resolved','Rejected')) DEFAULT 'Pending',
     reply TEXT,
-    acknowledged BOOLEAN DEFAULT false,
-    date TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    FOREIGN KEY (user_id) REFERENCES users(id)
+    acknowledged INTEGER DEFAULT 0,
+    date DATETIME DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
 );
 
--- Create admins table
 CREATE TABLE admins (
-    id INT AUTO_INCREMENT PRIMARY KEY,
-    username VARCHAR(100) UNIQUE,
-    password VARCHAR(255)
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    username TEXT UNIQUE,
+    password TEXT
 );
 
--- Insert admin users
-INSERT INTO admins (username, password) VALUES 
+INSERT OR IGNORE INTO admins (username, password) VALUES 
 ('sushma', 'sush123'),
 ('admin', 'admin123'),
 ('sush', 'sush123');
 
--- Show tables
-SHOW TABLES;
-
--- Optional: see inserted admins
-SELECT * FROM admins;
+INSERT OR IGNORE INTO users (id, name, email, password, approved) VALUES
+(1, 'Demo User', 'user@example.com', 'user123', 1);

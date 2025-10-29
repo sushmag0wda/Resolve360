@@ -35,6 +35,21 @@ body {
   animation: fadeIn 1s ease forwards;
 }
 
+.login-hint {
+  margin-top: 12px;
+  padding: 10px 12px;
+  background: rgba(255, 255, 255, 0.85);
+  border: 1px dashed #ff99cc;
+  border-radius: 10px;
+  text-align: center;
+  font-size: 14px;
+  color: #666;
+}
+
+.login-hint strong {
+  color: #ff3399;
+}
+
 @keyframes fadeIn {
   from { opacity: 0; transform: translateY(-20px); }
   to { opacity: 1; transform: translateY(0); }

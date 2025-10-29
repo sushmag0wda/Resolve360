@@ -41,7 +41,7 @@ app.post('/register', (req, res) => {
   db.query(sql, [name, email, password], (err) => {
     if (err) {
       let errorMessage = 'Registration failed. Please try again.';
-      if (err.code === 'ER_DUP_ENTRY') {
+      if (err.message && err.message.includes('UNIQUE constraint failed')) {
         errorMessage = 'Email already registered.';
       }
       return res.render('register', { message: errorMessage });
@@ -50,13 +50,12 @@ app.post('/register', (req, res) => {
   });
 });
 
-
 app.post('/login', (req, res) => {
   const { email, password } = req.body;
   const sql = 'SELECT * FROM users WHERE email = ? AND password = ?';
   db.query(sql, [email, password], (err, results) => {
     if (err) return res.send('Login error.');
-    if (results.length === 0) {
+    if (!results || results.length === 0) {
       return res.redirect('/register?message=No account found. Please register.');
     }
     const user = results[0];
@@ -83,9 +82,9 @@ app.get('/dashboard', (req, res) => {
   `;
 
   db.query(userQuery, [userId], (err, userResults) => {
-    if (err || userResults.length === 0) return res.send('Error loading dashboard.');
+    if (err || !userResults || userResults.length === 0) return res.send('Error loading dashboard.');
     db.query(complaintQuery, [userId], (err, complaints) => {
-      if (err) return res.send('Error loading complaints.');
+      if (err || !complaints) return res.send('Error loading complaints.');
       res.render('dashboard', {
         user: userResults[0],
         complaints,
@@ -114,8 +113,8 @@ app.post('/submit-complaint', (req, res) => {
 app.post('/user/acknowledge-complaint', (req, res) => {
   if (!req.session.user) return res.redirect('/login');
   const { complaintId } = req.body;
-  const sql = 'UPDATE complaints SET acknowledged = true WHERE id = ? AND user_id = ?';
-  db.query(sql, [complaintId, req.session.user.id], (err) => {
+  const sql = 'UPDATE complaints SET acknowledged = 1 WHERE id = ? AND user_id = ?';
+  db.query(sql, [complaintId, req.session.user.id], (err, result) => {
     if (err) return res.send('Error acknowledging complaint.');
     res.redirect('/dashboard?message=Complaint acknowledged!');
   });
@@ -130,7 +129,7 @@ app.post('/forgot-password', (req, res) => {
   const sql = 'UPDATE users SET password = ? WHERE email = ?';
   db.query(sql, [newPassword, email], (err, result) => {
     if (err) return res.send('Error resetting password.');
-    if (result.affectedRows === 0) {
+    if (!result || result.affectedRows === 0) {
       return res.redirect('/forgot-password?message=Email not found.');
     }
     res.redirect('/login?message=Password reset successful!');
@@ -154,7 +153,7 @@ app.post('/admin', (req, res) => {
   const sql = 'SELECT * FROM admins WHERE username = ? AND password = ?';
   db.query(sql, [username, password], (err, results) => {
     if (err) return res.send('Admin login error.');
-    if (results.length === 0) {
+    if (!results || results.length === 0) {
       return res.redirect('/admin?message=Invalid credentials');
     }
     req.session.admin = results[0];
@@ -180,7 +179,7 @@ app.get('/admin-dashboard', (req, res) => {
     if (err) return res.send('Error loading admin dashboard.');
     res.render('admin-dashboard', {
       admin: req.session.admin,
-      complaints: results,
+      complaints: results || [],
       message: req.query.message || '',
       search
     });
@@ -202,10 +201,10 @@ app.post('/admin/update-status', (req, res) => {
 
 app.post('/admin/delete-complaint', (req, res) => {
   const { complaintId } = req.body;
-  const sql = 'DELETE FROM complaints WHERE id = ? AND acknowledged = true';
+  const sql = 'DELETE FROM complaints WHERE id = ? AND acknowledged = 1';
   db.query(sql, [complaintId], (err, result) => {
     if (err) return res.send('Failed to delete complaint.');
-    if (result.affectedRows === 0) {
+    if (!result || result.affectedRows === 0) {
       return res.redirect('/admin-dashboard?message=User has not acknowledged yet.');
     }
     res.redirect('/admin-dashboard?message=Complaint deleted!');
@@ -227,7 +226,7 @@ app.get('/admin-users', (req, res) => {
     if (err) return res.send('Failed to load users.');
     res.render('admin-users', {
       admin: req.session.admin,
-      users,
+      users: users || [],
       message: req.query.message || '',
       search
     });
@@ -246,8 +245,11 @@ app.post('/admin/approve-user', (req, res) => {
 app.post('/admin/reject-user', (req, res) => {
   const { userId } = req.body;
   const sql = 'DELETE FROM users WHERE id = ? AND approved = 0';
-  db.query(sql, [userId], (err) => {
+  db.query(sql, [userId], (err, result) => {
     if (err) return res.send('Rejection failed.');
+    if (!result || result.affectedRows === 0) {
+      return res.redirect('/admin-users?message=User not found or already approved.');
+    }
     res.redirect('/admin-users?message=User rejected and removed!');
   });
 });
@@ -257,4 +259,4 @@ app.post('/admin/reject-user', (req, res) => {
 const PORT = 3000;
 app.listen(PORT, () => {
   console.log(`🚀 Server running at http://localhost:${PORT}`);
-}); 
+});
